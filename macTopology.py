@@ -36,8 +36,6 @@ class NetworkTopo( Topo ):
                       params2={ 'ip' : defaultIP } )  # for clarity
         self.addLink( s2, router, intfName2='r0-eth2',
                       params2={ 'ip' : '10.0.0.1/24' } )
-        # self.addLink( s3, router, intfName2='r0-eth3',
-        #              params2={ 'ip' : '10.0.0.1/8' } )
 
         dbserver = self.addHost( 'dbserver', ip='192.168.1.100/24',
                            defaultRoute='via 192.168.1.1',
@@ -58,18 +56,19 @@ class NetworkTopo( Topo ):
         self.addLink(host1, router, intfName2='r0-eth3', params2={'ip': '203.0.113.1/24'})
 
 def run():
-    "Test linux router"
     topo = NetworkTopo()
     net = Mininet( topo=topo,
     		       controller=RemoteController('c0', protocols="OpenFLow13"),
                    waitConnected=True,
                    switch=OVSKernelSwitch,
                    )
-    # net = Mininet( topo=topo,
-    #               waitConnected=True )  # controller is used by s1-s3
     net.start()
     info( '*** Routing Table on Router:\n' )
     info( net[ 'r0' ].cmd( 'route' ) )
+
+    net[ 'server1' ].cmd( 'python3 -m http.server 80 &' )
+    net[ 'server2' ].cmd( 'python3 -m http.server 80 &' )
+
     CLI( net )
     net.stop()
 

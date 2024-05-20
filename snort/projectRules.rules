@@ -1,0 +1,8 @@
+alert icmp any any -> 10.0.0.100 any (msg:"ICMP Flood to server1 Detected"; sid:1000004; classtype:icmp-event; detection_filter:track by_dst, count 50, seconds 10;)
+alert icmp any any -> 10.0.0.200 any (msg:"ICMP Flood to server2 Detected"; sid:1000005; classtype:icmp-event; detection_filter:track by_dst, count 50, seconds 10;)
+
+alert tcp any any -> 10.0.0.100 80 (flags:S; msg:"SYN Flood to server1 Detected"; sid:1000006; classtype:attempted-dos; detection_filter:track by_dst, count 30, seconds 10;)
+alert tcp any any -> 10.0.0.200 80 (flags:S; msg:"SYN Flood to server2 Detected"; sid:1000007; classtype:attempted-dos; detection_filter:track by_dst, count 30, seconds 10;)
+
+alert tcp any any -> 10.0.0.100 80 (msg:"TCP Connection Flood to server1 Detected"; sid:1000008; classtype:attempted-dos; detection_filter:track by_dst, count 100, seconds 10;)
+alert tcp any any -> 10.0.0.200 80 (msg:"TCP Connection Flood to server2 Detected"; sid:1000009; classtype:attempted-dos; detection_filter:track by_dst, count 100, seconds 10;)
