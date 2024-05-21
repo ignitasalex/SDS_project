@@ -63,6 +63,13 @@ def run():
                    switch=OVSKernelSwitch,
                    )
     net.start()
+
+    net['host1'].cmd('sysctl -w net.ipv6.conf.all.disable_ipv6=1')
+    net['server1'].cmd('sysctl -w net.ipv6.conf.all.disable_ipv6=1')
+    net['server2'].cmd('sysctl -w net.ipv6.conf.all.disable_ipv6=1')
+    net['dbserver'].cmd('sysctl -w net.ipv6.conf.all.disable_ipv6=1')
+    net['r0'].cmd('sysctl -w net.ipv6.conf.all.disable_ipv6=1')
+
     info( '*** Routing Table on Router:\n' )
     info( net[ 'r0' ].cmd( 'route' ) )
 
