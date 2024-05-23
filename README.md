@@ -1,4 +1,4 @@
-![SDN_Project]
+#SDN_Project
 
 ## Overview
 This project focuses on the creation and management of a software-defined network (SDN) using Mininet and the Ryu controller. It includes the implementation of several key functionalities such as load balancing, firewall and network monitoring. In addition, it integrates with tools such as Snort for intrusion detection and Grafana for visualisation of performance metrics.
