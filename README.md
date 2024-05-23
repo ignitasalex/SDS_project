@@ -90,5 +90,8 @@ sudo snort -i s2-snort -A unsock -l /tmp -c /etc/snort/snort.conf
 Execute the DoS attack in the terminal of host1 (xterm host1) to server1 (10.0.0.100) or server2 (10.0.0.200):
 
 ```bash
-hping3 -V -1 -d 1400 --faster 10.0.0.100
+host1 hping3 -V -1 -d 1400 --faster 10.0.0.100
+```
+```bash
+host5 hping3 -c 10000 -d 120 -S -w 64 -p 80 --faster 10.0.0.202
 ```

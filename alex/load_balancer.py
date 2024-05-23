@@ -171,12 +171,12 @@ class LoadBalancer(simple_switch_13.SimpleSwitch13):
         self.logger.info("Handling TCP packet: %s -> %s", ip_header.src, ip_header.dst)
         print(f'SWITCH EN QUE SE AÑADE FLOW {datapath.id}')
         selected_server_ip, selected_server_mac, selected_server_port = self.SERVER1_IP, self.SERVER1_MAC, self.SERVER1_PORT
-        if dst_mac == self.SERVER1_MAC:
-            server_dst_ip = self.SERVER1_IP
-            server_out_port = self.SERVER1_PORT
+        prio_IPs = ['203.0.113.100']
+        ip_source = ip_header.src
+        if ip_source in prio_IPs:
+            selected_server_ip, selected_server_mac, selected_server_port = self.SERVER1_IP, self.SERVER1_MAC, self.SERVER1_PORT
         else:
-            server_dst_ip = self.SERVER2_IP
-            server_out_port = self.SERVER2_PORT
+            selected_server_ip, selected_server_mac, selected_server_port = self.SERVER2_IP, self.SERVER2_MAC, self.SERVER2_PORT
         #Cuando viene del s3, siempre sale del port 1
         # print(f'src MAC: {src_mac}   dst MAC: {dst_mac}')
         if datapath.id == 3:
@@ -208,7 +208,7 @@ class LoadBalancer(simple_switch_13.SimpleSwitch13):
         ###### EN CASO DE QUE SEA S2, HAY QUE AÑADIR FLOW A S3 TAMBIEN
         if datapath.id == 3:
             print(f'\n===========     AÑADIENDO FLOW AL SWITCH 2      =============')
-            selected_server_ip, selected_server_mac, selected_server_port = self.SERVER1_IP, self.SERVER1_MAC, self.SERVER1_PORT
+            
 
             
             match = parser.OFPMatch(in_port=1, eth_type=ETH_TYPE_IP, ip_proto=ip_header.proto,
