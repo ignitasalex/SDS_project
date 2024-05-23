@@ -8,6 +8,13 @@ This project focuses on the creation and management of a software-defined networ
 To get the project up and running, follow these steps in four separate terminals:
 
 ### Terminal 1:
+1. Start the Ryu controllers and other components:
+    ```sh
+    sudo ryu-manager ryu/simple_switch_snort.py ryu/rest_firewall.py loadbalancer/load_balancer.py grafana/simple_monitor_13_telegraf.py
+    ```
+
+
+### Terminal 2:
 1. Initialize the environment:
     ```sh
     ./initialize.sh
@@ -15,12 +22,6 @@ To get the project up and running, follow these steps in four separate terminals
 2. Run the Mininet topology:
     ```sh
     sudo python2 macTopology.py
-    ```
-
-### Terminal 2:
-1. Start the Ryu controllers and other components:
-    ```sh
-    sudo ryu-manager ryu/simple_switch_snort.py ryu/rest_firewall.py loadbalancer/load_balancer.py grafana/simple_monitor_13_telegraf.py
     ```
 
 ### Terminal 3:
