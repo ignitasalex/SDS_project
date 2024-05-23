@@ -1,7 +1,0 @@
-INICI:
-
-sudo python2 macTopology.py
-
-sudo ryu-manager ryu/simple_switch_snort.py ryu/rest_firewall.py alex/load_balancer.py
-
-./rules_firewall.sh

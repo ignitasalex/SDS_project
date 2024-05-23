@@ -1,97 +1,69 @@
-# SDS_project
+![SDN_Project]
 
-To run the topology with python2:
+## Overview
+This project focuses on the creation and management of a software-defined network (SDN) using Mininet and the Ryu controller. It includes the implementation of several key functionalities such as load balancing, firewall and network monitoring. In addition, it integrates with tools such as Snort for intrusion detection and Grafana for visualisation of performance metrics.
 
-```bash
-sudo python2 macTopology.py
-```
+## Quick Start
 
-## Snort
+To get the project up and running, follow these steps in four separate terminals:
 
-### Install
+### Terminal 1:
+1. Initialize the environment:
+    ```sh
+    ./initialize.sh
+    ```
+2. Run the Mininet topology:
+    ```sh
+    sudo python2 macTopology.py
+    ```
 
-```bash
-sudo apt install snort
-```
-### Configuration
-On /etc/snort/rules create the file 'projectRules.rules' with the following content (also available on the repository):
+### Terminal 2:
+1. Start the Ryu controllers and other components:
+    ```sh
+    sudo ryu-manager ryu/simple_switch_snort.py ryu/rest_firewall.py loadbalancer/load_balancer.py grafana/simple_monitor_13_telegraf.py
+    ```
 
-```text
-alert icmp any any -> 10.0.0.100 any (msg:"ICMP Flood to server1 Detected"; sid:1000004; classtype:icmp-event; detection_filter:track by_dst, count 50, seconds 10;)
-alert icmp any any -> 10.0.0.200 any (msg:"ICMP Flood to server2 Detected"; sid:1000005; classtype:icmp-event; detection_filter:track by_dst, count 50, seconds 10;)
+### Terminal 3:
+1. Apply the firewall rules:
+    ```sh
+    ./rules_firewall.sh
+    ```
 
-alert tcp any any -> 10.0.0.100 80 (flags:S; msg:"SYN Flood to server1 Detected"; sid:1000006; classtype:attempted-dos; detection_filter:track by_dst, count 30, seconds 10;)
-alert tcp any any -> 10.0.0.200 80 (flags:S; msg:"SYN Flood to server2 Detected"; sid:1000007; classtype:attempted-dos; detection_filter:track by_dst, count 30, seconds 10;)
+### Terminal 4:
+1. Configure and start Snort:
+    ```sh
+    ./snort/auto_snort.sh
+    ```
 
-alert tcp any any -> 10.0.0.100 80 (msg:"TCP Connection Flood to server1 Detected"; sid:1000008; classtype:attempted-dos; detection_filter:track by_dst, count 100, seconds 10;)
-alert tcp any any -> 10.0.0.200 80 (msg:"TCP Connection Flood to server2 Detected"; sid:1000009; classtype:attempted-dos; detection_filter:track by_dst, count 100, seconds 10;)
-```
+These commands will initialize and run all the necessary components for the project. Make sure to execute each set of commands in the specified order and terminals.
 
-On the file /etc/snort/snort.conf comment all the rules that you don't need and add the following line:
 
-```
-include $RULE_PATH/projectRules.rules
-```
+## Project Structure
 
-Restart snort to apply changes:
+This project includes a variety of directories and files, each with a specific purpose. Below is a description of each:
 
-```bash
-sudo systemctl restart snort
-sudo systemctl restart snort.service
-```
+### Directories:
 
-### Usage
+- `docu/` - This directory contains doc files.
+- `grafana/` - This folder contains scripts and configurations related to the integration of Grafana and Telegraf for network monitoring.
+- `loadbalancer/` - This folder contains scripts related to the implementation and testing of a load balancer on the simulated network.
+- `ryu/` - This folder contains scripts related to the Ryu driver, which is used to manage and control the Software Defined Network (SDN).
+- `snort/` - This folder contains scripts and configuration files related to the integration of Snort, an intrusion detection system (IDS), into the simulated network.
 
-Create an interface for s2 where snort will be listening:
+### Files:
 
-```
-sudo ip link add name s2-snort type dummy
-sudo ip link set s2-snort up 
-```
+- `initialize.sh` - A shell script that sets up the environment and cleans.
+- `macTopology.py` - This file defines the structure of the network simulated in Mininet, including the switches, hosts and links needed for testing and development of network applications.
+- `rules_firewall.sh` - This file contains the firewall rules that apply to the network, defining security policies to control traffic and protect the network infrastructure.
+- `requirements.txt` - This file lists all the Python dependencies and packages needed to run the project's scripts and applications..
+- `simple_monitor_13_telegraf.py` - A Python script designed to collect network metrics using Telegraf and visualise them in Grafana. This script allows monitoring different aspects of the network simulated in Mininet, providing a visual interface to analyse network performance and stability.
+- `load_balancer.py` - A Python script that implements load balancer logic, distributing network traffic across multiple servers to optimise performance and availability.
+- `rest_firewall.py` - A script that implements a firewall using Ryu. It allows to define and apply firewall rules through a REST API.
+- `simple_switch_snort.py` - A script that integrates Snort, an intrusion detection system (IDS), with a simple level 2 switch in Ryu.
 
-Run mininet topology instance:
 
-``
-sudo python2 macTopology.py
-```
 
-Set interface s2-snort to switch s2:
-```
-sudo ovs-vsctl add-port s2 s2-snort
-```
-
-Run ryu-manager with switch snort:
-
-```bash
-sudo ryu-manager simple_switch_snort.py
-```
-
-In order to check it if the interface has been correctly updated you can use:
-```
-sudo ovs-ofctl show s2
-```
-
-Also in order to see the flows of the switch s2 you can execute:
-```
-sudo ovs-ofctl dump-flows s2
-```
-
-Mirror all traffic to interface s2-snort:
-```bash
-sudo ovs-vsctl -- set Bridge s2 mirrors=@m -- --id=@s2-snort get Port s2-snort -- --id=@m create Mirror name=m0 select-all=true output-port=@s2-snort
-```
-
-Start snort:
-
-```bash
-sudo snort -i s2-snort -A unsock -l /tmp -c /etc/snort/snort.conf
-```
-
-Execute the DoS attack in the terminal of host1 (xterm host1) to server1 (10.0.0.100) or server2 (10.0.0.200):
-
-```bash
-host1 hping3 -V -1 -d 1400 --faster 10.0.0.100
-```
-```bash
-host5 hping3 -c 10000 -d 120 -S -w 64 -p 80 --faster 10.0.0.202
-```
+## Collaborators 
+* Dand Marbà Sera
+* Alex Romano Molar
+* Oriol Miranda Garrido 
