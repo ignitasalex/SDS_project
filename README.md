@@ -37,6 +37,16 @@ To get the project up and running, follow these steps in four separate terminals
     ./snort/auto_snort.sh
     ```
 
+### Attacks:
+1. Attack 1:
+    ```sh
+    host1 hping3 -V -1 -d 1400 --faster 10.0.0.100
+    ```
+2. Attack 2:
+    ```sh
+    host5 hping3 -c 10000 -d 120 -S -w 64 -p 80 --faster 10.0.0.202
+    ```
+
 These commands will initialize and run all the necessary components for the project. Make sure to execute each set of commands in the specified order and terminals.
 
 
