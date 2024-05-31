@@ -11,7 +11,7 @@ To get the project up and running, follow these steps in four separate terminals
 ### Terminal 1:
 1. Start the Ryu controllers and other components:
     ```sh
-    sudo ryu-manager ryu/simple_switch_snort.py ryu/rest_firewall.py loadbalancer/load_balancer.py grafana/simple_monitor_13_telegraf.py
+    sudo ryu-manager snort/snort.py ryu/rest_firewall.py loadbalancer/load_balancer.py grafana/monitor_telegraf.py
     ```
 
 
