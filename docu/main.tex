@@ -294,15 +294,16 @@ Another differnce is how ARP packets affect. On the given example the logic uses
     
             self.mac_to_port.setdefault(dpid, {})
     
-            self.logger.info("packet in %s %s %s %s", dpid, src_mac, dst_mac, in_port)
+            self.logger.info("packet in %s %s %s %s", dpid, src_mac, dst_mac,
+                            in_port)
     
             # Extract IP layer information
             ip_pkt = pkt.get_protocol(ipv4.ipv4)
             if ip_pkt:
                 src_ip = ip_pkt.src
                 dst_ip = ip_pkt.dst
-                self.logger.info("\nsrc_mac: %s, dst_mac: %s, src_ip: %s, dst_ip: %s\n",
-                                 src_mac, dst_mac, src_ip, dst_ip)
+                self.logger.info("\nsrc_mac: %s, dst_mac: %s, src_ip: %s, 
+                            dst_ip: %s\n", src_mac, dst_mac, src_ip, dst_ip)
     
             self.mac_to_port[dpid][src_mac] = in_port
     
@@ -314,7 +315,8 @@ Another differnce is how ARP packets affect. On the given example the logic uses
             actions = [parser.OFPActionOutput(out_port)]
     
             if out_port != ofproto.OFPP_FLOOD:
-                match = parser.OFPMatch(in_port=in_port, eth_dst=dst_mac, eth_src=src_mac)
+                match = parser.OFPMatch(in_port=in_port, eth_dst=dst_mac, 
+                                        eth_src=src_mac)
                 if msg.buffer_id != ofproto.OFP_NO_BUFFER:
                     self.add_flow(datapath, 1, match, actions, msg.buffer_id)
                     self.logger.info("return in out port")
@@ -325,15 +327,17 @@ Another differnce is how ARP packets affect. On the given example the logic uses
             # Handle ARP Packet
             if eth.ethertype == ether_types.ETH_TYPE_ARP:
                 arp_header = pkt.get_protocol(arp.arp)
-                if arp_header.dst_ip == self.VIRTUAL_IP and arp_header.opcode == arp.ARP_REQUEST:
+                if arp_header.dst_ip == self.VIRTUAL_IP and
+                        arp_header.opcode == arp.ARP_REQUEST:
                     # Build an ARP reply packet using source IP and source MAC
-                    reply_packet = self.arp_reply(arp_header.src_ip, arp_header.src_mac)
+                    reply_packet = self.arp_reply(arp_header.src_ip, 
+                                                arp_header.src_mac)
                     actions = [parser.OFPActionOutput(in_port)]
                     packet_out = parser.OFPPacketOut(datapath=datapath,
-                                                     in_port=ofproto.OFPP_ANY,
-                                                     data=reply_packet.data,
-                                                     actions=actions,
-                                                     buffer_id=ofproto.OFP_NO_BUFFER)
+                                                 in_port=ofproto.OFPP_ANY,
+                                                 data=reply_packet.data,
+                                                 actions=actions,
+                                                 buffer_id=ofproto.OFP_NO_BUFFER)
                     datapath.send_msg(packet_out)
                     self.logger.info("Sent the ARP reply packet")
                     return
@@ -342,11 +346,13 @@ Another differnce is how ARP packets affect. On the given example the logic uses
             if eth.ethertype == ETH_TYPE_IP:
                 ip_header = pkt.get_protocol(ipv4.ipv4)
                 if ip_header.dst == self.VIRTUAL_IP:
-                    self.handle_tcp_packet(datapath, in_port, ip_header, parser, dst_mac, src_mac)
+                    self.handle_tcp_packet(datapath, in_port, ip_header, parser,
+                                                        dst_mac, src_mac)
                     self.logger.info("TCP packet handled")
                     return
                 if ip_header.src == self.VIRTUAL_IP:
-                    self.handle_tcp_packet(datapath, in_port, ip_header, parser, dst_mac, src_mac)
+                    self.handle_tcp_packet(datapath, in_port, ip_header, parser,
+                                                        dst_mac, src_mac)
                     self.logger.info("TCP packet handled2222222 Source ip")
                     return
     
@@ -370,11 +376,11 @@ Another differnce is how ARP packets affect. On the given example the logic uses
             src_ip = self.VIRTUAL_IP
     
             if (dst_ip in Priority_IPs):
-                self.logger.info('\n ----------------------------------------           PRIORITY IP     -------------------------------------------')
+                self.logger.info('\n -----PRIORITY IP-----')
                 print(f'-{dst_ip}-\n')
                 src_mac = self.SERVER1_MAC
             else:
-                print('\n ----------------------------------------           no prio IP     ----------------------------------------------')
+                print('\n --- no prio IP ---')
                 print(f'-{dst_ip}-\n')
                 src_mac = self.SERVER2_MAC
     
@@ -382,41 +388,53 @@ Another differnce is how ARP packets affect. On the given example the logic uses
             #     src_mac = self.SERVER1_MAC
             # else:
             #     src_mac = self.SERVER2_MAC
-            # self.logger.info("\n************************************************************\nLoad balancer working Selected server MAC: " + src_mac)
+            # self.logger.info("\n*****\nLoad balancer working Selected
+                                server MAC: " + src_mac)
     
             pkt = packet.Packet()
-            pkt.add_protocol(ethernet.ethernet(dst=dst_mac, src=src_mac, ethertype=ether_types.ETH_TYPE_ARP))
-            pkt.add_protocol(arp.arp(opcode=arp.ARP_REPLY, src_mac=src_mac, src_ip=src_ip, dst_mac=arp_target_mac, dst_ip=arp_target_ip))
+            pkt.add_protocol(ethernet.ethernet(dst=dst_mac, src=src_mac,
+                            ethertype=ether_types.ETH_TYPE_ARP))
+            pkt.add_protocol(arp.arp(opcode=arp.ARP_REPLY, src_mac=src_mac,
+                src_ip=src_ip, dst_mac=arp_target_mac, dst_ip=arp_target_ip))
             pkt.serialize()
             return pkt
     
-        def handle_tcp_packet(self, datapath, in_port, ip_header, parser, dst_mac, src_mac):
+        def handle_tcp_packet(self, datapath, in_port, ip_header, parser, 
+                                dst_mac, src_mac):
     
-            self.logger.info("Handling TCP packet: %s -> %s", ip_header.src, ip_header.dst)
+            self.logger.info("Handling TCP packet: %s -> %s", ip_header.src,
+                            ip_header.dst)
             print(f'SWITCH EN QUE SE AÑADE FLOW {datapath.id}')
-            selected_server_ip, selected_server_mac, selected_server_port = self.SERVER1_IP, self.SERVER1_MAC, self.SERVER1_PORT
+            selected_server_ip, selected_server_mac, selected_server_port = 
+                self.SERVER1_IP, self.SERVER1_MAC, self.SERVER1_PORT
             prio_IPs = ['203.0.113.100']
             ip_source = ip_header.src
             if ip_source in prio_IPs:
-                selected_server_ip, selected_server_mac, selected_server_port = self.SERVER1_IP, self.SERVER1_MAC, self.SERVER1_PORT
+                selected_server_ip, selected_server_mac, selected_server_port = 
+                    self.SERVER1_IP, self.SERVER1_MAC, self.SERVER1_PORT
             else:
-                selected_server_ip, selected_server_mac, selected_server_port = self.SERVER2_IP, self.SERVER2_MAC, self.SERVER2_PORT
+                selected_server_ip, selected_server_mac, selected_server_port = 
+                    self.SERVER2_IP, self.SERVER2_MAC, self.SERVER2_PORT
             #Cuando viene del s3, siempre sale del port 1
             # print(f'src MAC: {src_mac}   dst MAC: {dst_mac}')
             if datapath.id == 3:
                 selected_server_port = 1
             
-            match = parser.OFPMatch(in_port=in_port, eth_type=ETH_TYPE_IP, ip_proto=ip_header.proto,
+            match = parser.OFPMatch(in_port=in_port, eth_type=ETH_TYPE_IP, 
+                                    ip_proto=ip_header.proto,
                                     ipv4_dst=self.VIRTUAL_IP)
             # ip destino
             actions = [parser.OFPActionSetField(ipv4_dst=selected_server_ip),
                        parser.OFPActionOutput(selected_server_port)]
     
             self.add_flow(datapath, 20, match, actions)
-            self.logger.info("<==== Added TCP Flow- Route to Server: %s from Client: %s on Switch Port: %s ====>",
-                             selected_server_ip, ip_header.src, selected_server_port)
+            self.logger.info("<==== Added TCP Flow- Route to Server: %s 
+                        from Client: %s on Switch Port: %s ====>",
+                             selected_server_ip, ip_header.src, 
+                                            selected_server_port)
     
-            match = parser.OFPMatch(in_port=selected_server_port, eth_type=ETH_TYPE_IP,
+            match = parser.OFPMatch(in_port=selected_server_port, 
+                                    eth_type=ETH_TYPE_IP,
                                     ip_proto=ip_header.proto,
                                     ipv4_src=selected_server_ip,
                                     eth_dst=src_mac)
@@ -424,28 +442,33 @@ Another differnce is how ARP packets affect. On the given example the logic uses
                        parser.OFPActionOutput(in_port)]
     
             self.add_flow(datapath, 20, match, actions)
-            self.logger.info("<==== Added TCP Flow- Reverse route from Server: %s to Client: %s on Switch Port: %s ====>",
+            self.logger.info("<==== Added TCP Flow- Reverse route from Server: 
+                            %s to Client: %s on Switch Port: %s ====>",
                              selected_server_ip, src_mac, in_port)
-            print(f' _____________ port in : {in_port} ________ selected server port: {selected_server_port}')
+            print(f' _____ port in : {in_port} ___ selected server port: 
+                                        {selected_server_port}')
             
     
             ###### EN CASO DE QUE SEA S2, HAY QUE AÑADIR FLOW A S3 TAMBIEN
             if datapath.id == 3:
-                print(f'\n===========     AÑADIENDO FLOW AL SWITCH 2      =============')
+                print(f'\n====  AÑADIENDO FLOW AL SWITCH 2  ====')
                 
     
                 
-                match = parser.OFPMatch(in_port=1, eth_type=ETH_TYPE_IP, ip_proto=ip_header.proto,
-                                        ipv4_dst=self.VIRTUAL_IP)
+                match = parser.OFPMatch(in_port=1, eth_type=ETH_TYPE_IP, 
+                        ip_proto=ip_header.proto, ipv4_dst=self.VIRTUAL_IP)
     
                 actions = [parser.OFPActionSetField(ipv4_dst=selected_server_ip),
                        parser.OFPActionOutput(selected_server_port)]
     
                 self.add_flow(self.datapath_s2, 20, match, actions)
-                self.logger.info("<==== Added TCP Flow-  S3 Route to Server: %s from Client: %s on Switch Port: %s ====>",
-                                selected_server_ip, ip_header.src, selected_server_port)
+                self.logger.info("<==== Added TCP Flow-  S3 Route to Server: 
+                                %s from Client: %s on Switch Port: %s ====>",
+                                selected_server_ip, ip_header.src, 
+                                        selected_server_port)
     
-                match = parser.OFPMatch(in_port=selected_server_port, eth_type=ETH_TYPE_IP,
+                match = parser.OFPMatch(in_port=selected_server_port, 
+                                        eth_type=ETH_TYPE_IP,
                                         ip_proto=ip_header.proto,
                                         ipv4_src=selected_server_ip,
                                         eth_dst=src_mac)
@@ -453,56 +476,13 @@ Another differnce is how ARP packets affect. On the given example the logic uses
                         parser.OFPActionOutput(in_port)]
     
                 self.add_flow(self.datapath_s2, 20, match, actions)
-                self.logger.info("<==== Added TCP Flow S3- Reverse route from Server: %s to Client: %s on Switch Port: %s ====>",
+                self.logger.info("<==== Added TCP Flow S3- Reverse route 
+                    from Server: %s to Client: %s on Switch Port: %s ====>",
                                 selected_server_ip, src_mac, in_port)
     
 \end{verbatim}
 
-\subsection{Monitoring and Visualization}
-
-\subsubsection{monitor\_telegraf.py}
-The \texttt{monitor\_telegraf.py} script is designed to collect network performance metrics using Telegraf and visualize them in Grafana. This script monitors various aspects of network performance, such as bandwidth usage, latency, and packet loss, providing a visual interface for analyzing network health and stability.
-
-\begin{verbatim}
-from ryu.base import app_manager
-from ryu.controller import ofp_event
-from ryu.controller.handler import MAIN_DISPATCHER, set_ev_cls
-from ryu.lib.packet import packet, ethernet
-from ryu.ofproto import ofproto_v1_3
-import socket
-import datetime
-
-class NetworkMonitor(app_manager.RyuApp):
-    OFP_VERSIONS = [ofproto_v1_3.OFP_VERSION]
-
-    def __init__(self, *args, **kwargs):
-        super(NetworkMonitor, self).__init__(*args, **kwargs)
-
-    @set_ev_cls(ofp_event.EventOFPFlowStatsReply, MAIN_DISPATCHER)
-    def _flow_stats_reply_handler(self, ev):
-        for flow in ev.msg.body:
-            if flow.priority == 20:
-                ipv4_src = flow.match.get('ipv4_src', 'NA')
-                ipv4_dst = flow.match.get('ipv4_dst', 'NA')
-                timestamp = int(datetime.datetime.now().timestamp() * 1000000000)
-                msg = f"flows,datapath={ev.msg.datapath.id},ipv4_src={ipv4_src}," \
-                      f"ipv4_dst={ipv4_dst} packets={flow.packet_count}," \
-                      f"bytes={flow.byte_count} {timestamp}"
-                sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-                sock.sendto(msg.encode(), ('localhost', 8094))
-
-    @set_ev_cls(ofp_event.EventOFPPortStatsReply, MAIN_DISPATCHER)
-    def _port_stats_reply_handler(self, ev):
-        for stat in ev.msg.body:
-            timestamp = int(datetime.datetime.now().timestamp() * 1000000000)
-            msg = f"ports,datapath={ev.msg.datapath.id},port={stat.port_no} " \
-                  f"rx-pkts={stat.rx_packets},rx-bytes={stat.rx_bytes},rx-error={stat.rx_errors}," \
-                  f"tx-pkts={stat.tx_packets},tx-bytes={stat.tx_bytes},tx-error={stat.tx_errors} {timestamp}"
-            sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            sock.sendto(msg.encode(), ('localhost', 8094))
-\end{verbatim}
-
-\subsubsection{initialize.sh}
+\subsection{Script to initialize the environment}
 The \texttt{initialize.sh} script sets up the environment and performs initial clean-up tasks. This script ensures that the necessary dependencies are installed and the environment is ready for the SDN simulation.
 
 \begin{verbatim}
@@ -517,7 +497,7 @@ sudo apt-get install -y mininet wireshark
 sudo mn -c
 \end{verbatim}
 
-\subsubsection{macTopology.py}
+\subsection{Topology python script}
 The \texttt{macTopology.py} file defines the structure of the network simulated in Mininet, including the switches, hosts, and links needed for testing and development of network applications.
 
 \begin{verbatim}
@@ -566,7 +546,7 @@ if __name__ == '__main__':
     myNetwork()
 \end{verbatim}
 
-\subsubsection{rules\_firewall.sh}
+\subsection{Firewall rules}
 The \texttt{rules\_firewall.sh} script contains the firewall rules that apply to the network, defining security policies to control traffic and protect the network infrastructure.
 
 \begin{verbatim}
@@ -592,6 +572,73 @@ curl -X POST -d '{
 
 These scripts work together to manage, secure, and monitor the SDN-based network. Each script has been carefully configured to fulfill its specific role, ensuring the network operates efficiently and securely.
 
+\subsection{Monitoring and Visualization}
+
+\subsubsection{monitor\_telegraf.py}
+The \texttt{monitor\_telegraf.py} script is designed to collect network performance metrics using Telegraf and visualize them in Grafana. This script monitors various aspects of network performance, such as bandwidth usage, latency, and packet loss, providing a visual interface for analyzing network health and stability.
+
+\begin{verbatim}
+from ryu.base import app_manager
+from ryu.controller import ofp_event
+from ryu.controller.handler import MAIN_DISPATCHER, set_ev_cls
+from ryu.lib.packet import packet, ethernet
+from ryu.ofproto import ofproto_v1_3
+import socket
+import datetime
+
+class NetworkMonitor(app_manager.RyuApp):
+    OFP_VERSIONS = [ofproto_v1_3.OFP_VERSION]
+
+    def __init__(self, *args, **kwargs):
+        super(NetworkMonitor, self).__init__(*args, **kwargs)
+
+    @set_ev_cls(ofp_event.EventOFPFlowStatsReply, MAIN_DISPATCHER)
+    def _flow_stats_reply_handler(self, ev):
+        for flow in ev.msg.body:
+            if flow.priority == 20:
+                ipv4_src = flow.match.get('ipv4_src', 'NA')
+                ipv4_dst = flow.match.get('ipv4_dst', 'NA')
+                timestamp = int(datetime.datetime.now().timestamp() * 1000000000)
+                msg = f"flows,datapath={ev.msg.datapath.id},ipv4_src={ipv4_src}," \
+                      f"ipv4_dst={ipv4_dst} packets={flow.packet_count}," \
+                      f"bytes={flow.byte_count} {timestamp}"
+                sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+                sock.sendto(msg.encode(), ('localhost', 8094))
+
+    @set_ev_cls(ofp_event.EventOFPPortStatsReply, MAIN_DISPATCHER)
+    def _port_stats_reply_handler(self, ev):
+        for stat in ev.msg.body:
+            timestamp = int(datetime.datetime.now().timestamp() * 1000000000)
+            msg = f"ports,datapath={ev.msg.datapath.id},port={stat.port_no} " \
+                  f"rx-pkts={stat.rx_packets},rx-bytes={stat.rx_bytes},
+                    rx-error={stat.rx_errors}," \
+                  f"tx-pkts={stat.tx_packets},tx-bytes={stat.tx_bytes},
+                    tx-error={stat.tx_errors} {timestamp}"
+            sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            sock.sendto(msg.encode(), ('localhost', 8094))
+\end{verbatim}
+
+\subsubsection{Examples}
+
+The following image illustrates a DoS attack targeting the IP address 10.0.0.200. The two top charts demonstrate the significantly higher number of packets and bytes received by this IP compared to the other server.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.9\textwidth]{grafana2.jpg}
+\caption{Grafana visualization of a single attack}
+\label{fig
+}
+\end{figure}
+
+The next image shows two web servers each subjected to an attack at different times. It is evident that once a predefined threshold is reached, the attacker's IP address is blocked, thereby stopping the attack.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.9\textwidth]{grafana1.jpg}
+\caption{Grafana visualization of two attacks}
+\label{fig
+}
+\end{figure}
 
 % Results and Analysis
 \section{Results and Analysis}
@@ -604,8 +651,8 @@ These scripts work together to manage, secure, and monitor the SDN-based network
 
 % Discussion
 \section{Discussion}
-The results obtained from the implementation of the SDN project have shown significant improvements in network manageability and security. The load balancer is able to successfully grant access to services for the priority customers, even under stress from a DDoS attack.
-On the other hand, the firewall with snort work perfectily in conjuntion to detect DoS attacks and proceed blocking the machines. Even if the machine is targeted as a regular customer.
+The results obtained from the implementation of the SDN project have shown significant improvements in network manageability and security. The load balancer is able to successfully grant access to services for the priority customers, even under stress from a DoS attack.
+On the other hand, the firewall with snort work perfectly in conjunction to detect DoS attacks and proceed blocking the machines. Even if the machine is targeted as a regular customer.
 Finally grafana is integrated for real time statistics about the load on the servers.
 
 However, some limitations were encountered during the project. The scalability of the network was limited by the computational resources available, and certain advanced features of Snort were not fully utilized due to configuration complexities. Future work could focus on addressing these limitations by deploying the SDN in a more scalable environment and exploring additional security features. For example displaying blocked IPs or more metrics we would be interested in gathering.
@@ -653,6 +700,7 @@ Based on the findings and limitations identified, several areas for future work 
     \item \textbf{Extended Monitoring Capabilities:} Expanding the monitoring framework to include more detailed metrics and using predictive analytics to anticipate and mitigate potential issues.
     \item \textbf{Controller Performance Evaluation:} Exploring the use of other SDN controllers, such as OpenDaylight or ONOS, and comparing their performance, scalability, and feature sets with Ryu.
     \item \textbf{Automated Configuration Management:} Implementing automated configuration management tools to streamline the setup and maintenance of the SDN and its integrated components.
+    \item \textbf{Broader Attack Detection and Mitigation:} Extending the current work beyond DoS attacks to detect and mitigate other types of cyber-attacks such as Distributed Denial of Service (DDoS), brute force attacks, and other sophisticated attack vectors. This could involve the development and integration of new detection algorithms and mitigation strategies tailored to these threats.
 \end{itemize}
 
 In conclusion, the project has successfully showcased the potential of software-defined networking in enhancing network flexibility, security, and performance monitoring. The integration of various tools and functionalities demonstrates the versatility and effectiveness of SDN in managing modern network infrastructures. Further research and development in the areas identified can lead to even more robust and scalable SDN solutions.
