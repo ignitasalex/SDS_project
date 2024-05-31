@@ -68,10 +68,10 @@ This project includes a variety of directories and files, each with a specific p
 - `macTopology.py` - This file defines the structure of the network simulated in Mininet, including the switches, hosts and links needed for testing and development of network applications.
 - `rules_firewall.sh` - This file contains the firewall rules that apply to the network, defining security policies to control traffic and protect the network infrastructure.
 - `requirements.txt` - This file lists all the Python dependencies and packages needed to run the project's scripts and applications..
-- `simple_monitor_13_telegraf.py` - A Python script designed to collect network metrics using Telegraf and visualise them in Grafana. This script allows monitoring different aspects of the network simulated in Mininet, providing a visual interface to analyse network performance and stability.
+- `monitor_telegraf.py` - A Python script designed to collect network metrics using Telegraf and visualise them in Grafana. This script allows monitoring different aspects of the network simulated in Mininet, providing a visual interface to analyse network performance and stability.
 - `load_balancer.py` - A Python script that implements load balancer logic, distributing network traffic across multiple servers to optimise performance and availability.
 - `rest_firewall.py` - A script that implements a firewall using Ryu. It allows to define and apply firewall rules through a REST API.
-- `simple_switch_snort.py` - A script that integrates Snort, an intrusion detection system (IDS), with a simple level 2 switch in Ryu.
+- `snort.py` - A script that integrates Snort, an intrusion detection system (IDS), with a simple level 2 switch in Ryu.
 
 
 
