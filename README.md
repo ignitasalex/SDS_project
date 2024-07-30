@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # SDN_Project
 ![SDN_Project](docu/v2.2.jpeg)
 
