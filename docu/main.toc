@@ -1,0 +1,23 @@
+\contentsline {section}{\numberline {1}Introduction}{3}{section.1}%
+\contentsline {section}{\numberline {2}Background and Motivation}{3}{section.2}%
+\contentsline {section}{\numberline {3}Project Description}{3}{section.3}%
+\contentsline {section}{\numberline {4}Implementation}{5}{section.4}%
+\contentsline {subsection}{\numberline {4.1}RYU Controller}{5}{subsection.4.1}%
+\contentsline {subsubsection}{\numberline {4.1.1}snort.py}{5}{subsubsection.4.1.1}%
+\contentsline {subsubsection}{\numberline {4.1.2}rest\_firewall.py}{6}{subsubsection.4.1.2}%
+\contentsline {subsection}{\numberline {4.2}Load Balancer}{7}{subsection.4.2}%
+\contentsline {subsubsection}{\numberline {4.2.1}load\_balancer.py}{7}{subsubsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.3}Script to initialize the environment}{13}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Topology python script}{13}{subsection.4.4}%
+\contentsline {subsection}{\numberline {4.5}Firewall rules}{14}{subsection.4.5}%
+\contentsline {subsection}{\numberline {4.6}Monitoring and Visualization}{15}{subsection.4.6}%
+\contentsline {subsubsection}{\numberline {4.6.1}monitor\_telegraf.py}{15}{subsubsection.4.6.1}%
+\contentsline {subsubsection}{\numberline {4.6.2}Examples}{16}{subsubsection.4.6.2}%
+\contentsline {section}{\numberline {5}Results and Analysis}{17}{section.5}%
+\contentsline {section}{\numberline {6}Discussion}{17}{section.6}%
+\contentsline {section}{\numberline {7}Conclusions}{17}{section.7}%
+\contentsline {subsection}{\numberline {7.1}Achievements}{17}{subsection.7.1}%
+\contentsline {subsection}{\numberline {7.2}Challenges and Limitations}{18}{subsection.7.2}%
+\contentsline {subsection}{\numberline {7.3}Lessons Learned}{18}{subsection.7.3}%
+\contentsline {subsection}{\numberline {7.4}Future Work}{18}{subsection.7.4}%
+\contentsline {section}{\numberline {8}Source Code}{19}{section.8}%
