@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # SDN_Project
 ![SDN_Project](docu/v2.2.jpeg)
 
@@ -79,3 +80,6 @@ This project includes a variety of directories and files, each with a specific p
 * Dand Marbà Sera
 * Alex Romano Molar
 * Oriol Miranda Garrido 
+=======
+# SDS_project
+>>>>>>> 391088d85996aaa2d64990310ecfbe085f34922b
