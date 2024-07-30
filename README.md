@@ -80,5 +80,5 @@ This project includes a variety of directories and files, each with a specific p
 * Dand Marbà Sera
 * Alex Romano Molar
 * Oriol Miranda Garrido 
-=======
+
 
